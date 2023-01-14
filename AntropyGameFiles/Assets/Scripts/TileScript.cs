@@ -1,18 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
-//using Unity.VisualScripting.Dependencies.NCalc;
 using UnityEngine;
 using System;
-//using Unity.VisualScripting;
 using UnityEditor;
 
 public class TileScript : MonoBehaviour
 {
-  /// <summary>
-  /// Eucledian Distance to the anthill in steps (no diagonal)
-  /// </summary>
-  int distanceAnthill;
-
   /// <summary>
   /// X,Z Pos of the tile
   /// </summary>
@@ -81,14 +74,15 @@ public class TileScript : MonoBehaviour
     }
   }
 
-  
-
   /// <summary>
   /// Spawns the owned flag prefab on the tile
   /// </summary>
   public void spawnOwnedFlagOnTile()
   {
-    flag = Instantiate<GameObject>(redFlagPrefab, new Vector3(xPos + 0.5f, 0.2f, zPos + 0.5f), Quaternion.identity, transform);
+    if(flag == null) 
+    {
+      flag = Instantiate<GameObject>(redFlagPrefab, new Vector3(xPos + 0.5f, 0.2f, zPos + 0.5f), Quaternion.identity, transform);
+    }
   }
 
   /// <summary>

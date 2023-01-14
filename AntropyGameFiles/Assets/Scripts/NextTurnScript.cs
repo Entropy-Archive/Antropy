@@ -38,7 +38,7 @@ public class NextTurnScript : MonoBehaviour
       Debug.Log("Turn: " + GameManager.Instance.currentTurnCount);
       AntTurn();
       MapTurn();
-      //WeatherTurn();
+      WeatherTurn();
       EventTurn();
       SeasonTurn();
       MessageTurn();
@@ -60,10 +60,6 @@ public class NextTurnScript : MonoBehaviour
 
   void AntTurn() 
   {
-
-    //Reset GoalCheck
-    GameManager.Instance.currentGoalProgress = 0;
-
     //Insert Ant Turn
     for (int i = 0; i < GameManager.Instance.rows; i++)
     {
@@ -71,8 +67,12 @@ public class NextTurnScript : MonoBehaviour
       {
         if(GameManager.Instance.Map[i, j].ownedByPlayer) 
         {
+
+          //Weather and Distance Calculation 
           //Tile Distance Degradation + Current Weather influence
           float gatheringBase = GameManager.Instance.Map[i, j].assignedAnts * GameManager.Instance.resourceGatherRate;// * gameManager.weatherAcessMultiplier);
+
+          //TODO Insert Distance Tile Reduction here
           for (int k = 0; k < GameManager.Instance.Map[i, j].distanceAntHill; k++)
           {
             //gatheringBase = Mathf.Ceil(gatheringBase * gameManager.distanceGatheringReductionRate);
@@ -81,34 +81,19 @@ public class NextTurnScript : MonoBehaviour
           if(GameManager.Instance.Map[i, j].type == 1 || GameManager.Instance.Map[i, j].type == 2) // tile is grass or soil
           {
             GameManager.Instance.resources += GameManager.Instance.Map[i, j].reservedResources;
-            //Debug.Log("NewResources: " + GameManager.Instance.resources);
 
             //End Score
             GameManager.Instance.totalResources += GameManager.Instance.Map[i, j].reservedResources;
             CalculateNewResourceAmountFlat((int)-GameManager.Instance.Map[i, j].reservedResources, i, j);
-          
           }
-          
-          //add the flag because it's owned (Prototype) only if 10 are on a tile you get a flag
-          if(GameManager.Instance.Map[i, j].assignedAnts == 10) 
-          {
-            GameManager.Instance.mapInstance.mapMatrix[i, j].spawnOwnedFlagOnTile();
-            GameManager.Instance.currentGoalProgress += 1;
-          }
-          else 
-          {
-            GameManager.Instance.mapInstance.mapMatrix[i, j].deleteFlagOnTile();
-            GameManager.Instance.currentGoalProgress -= 1;
-          }    
+          GameManager.Instance.mapInstance.mapMatrix[i, j].spawnOwnedFlagOnTile();
         }
-        else if (GameManager.Instance.Map[i, j].assignedAnts != 10) 
+        else
         {
-          //if tile not owned by player remove flag
           GameManager.Instance.mapInstance.mapMatrix[i, j].deleteFlagOnTile();
         }
       }
     }
-
     //Current Upkeep Calculation
     GameManager.Instance.currentUpkeep = (int)Mathf.Ceil(GameManager.Instance.totalAnts * GameManager.Instance.foodPerAnt);
 
@@ -116,23 +101,6 @@ public class NextTurnScript : MonoBehaviour
     //resources - currentUpkeet => leftover resources
     int netto_resource = GameManager.Instance.resources - GameManager.Instance.currentUpkeep;
     GameManager.Instance.resources = Mathf.Min(GameManager.Instance.maxResourceStorage, Mathf.Max(0, netto_resource));
-    /*
-    if ((GameManager.Instance.resources - GameManager.Instance.currentUpkeep) > 0) 
-    {
-      GameManager.Instance.resources -= GameManager.Instance.currentUpkeep;
-    }
-    else 
-    {
-      GameManager.Instance.resources = 0;
-    }
-   
-    if (GameManager.Instance.resources > GameManager.Instance.maxResourceStorage)
-    {
-      GameManager.Instance.resources = GameManager.Instance.maxResourceStorage;
-    }
-    */
-    //Check if we reached the prototype goal
-    GameManager.Instance.prototypeLooseCheck();
 
     //Population growth
     int new_pop = (int)Mathf.Ceil((float)GameManager.Instance.totalAnts * GameManager.Instance.antPopGrowthPerTurn);
@@ -164,9 +132,8 @@ public class NextTurnScript : MonoBehaviour
         }
         GameManager.Instance.income += GameManager.Instance.Map[i, j].reservedResources;
         
-
         //check if the growth if we reached a threshhold to update the tile mesh
-        GameManager.Instance.mapInstance.TileErosionCheck(i,j); // TODO: think about where to set TileErosion (ExchangeTilePrefab) function!
+        GameManager.Instance.mapInstance.TileErosionCheck(i,j);
       }
     }
   }
@@ -215,15 +182,29 @@ public class NextTurnScript : MonoBehaviour
 
   void SeasonTurn() 
   {
-    //Insert Season Turn
+    //Check the current season
+    if(GameManager.Instance.currentTurnCount <= GameManager.Instance.springTurnCount) 
+    {
+      GameManager.Instance.currentSeason = 0;
+    }
+    else if (GameManager.Instance.currentTurnCount <= GameManager.Instance.summerTurnCount)
+    {
+      GameManager.Instance.currentSeason = 1;
+    }
+    else if (GameManager.Instance.currentTurnCount <= GameManager.Instance.autumnTurnCount)
+    {
+      GameManager.Instance.currentSeason = 2;
+    }
+    else if (GameManager.Instance.currentTurnCount <= GameManager.Instance.winterTurnCount)
+    {
+      GameManager.Instance.currentSeason = 3;
+    }
   }
 
   public void TurnInfoUpdate()
   {
     TurnText.text = GameManager.Instance.currentTurnCount + "/" + GameManager.Instance.maxTurnCount;
   }
-
-
 
   /// <summary>
   /// Adds an integer number to the current resource amount on the tile
@@ -259,6 +240,4 @@ public class NextTurnScript : MonoBehaviour
     }
     return (int)resource;
   }
-
-
 }

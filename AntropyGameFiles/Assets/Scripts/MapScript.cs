@@ -12,7 +12,7 @@ public class MapScript : MonoBehaviour
 {
 
   /// <summary>
-  /// Matrix of the Map
+  /// Matrix of instantiated map tiles
   /// </summary>
   public TileScript[,] mapMatrix;
 
@@ -78,22 +78,17 @@ public class MapScript : MonoBehaviour
         { 
           if(j + 1 > GameManager.Instance.columns - 1) 
           {
-            //ExchangeTilePrefab(mapMatrix[i, j], mapMatrix[i, j - 1].TileType);
             ExchangeTilePrefab(i,j,GameManager.Instance.Map[i, j - 1].type);
           }
           else 
           {
-            //ExchangeTilePrefab(mapMatrix[i, j], mapMatrix[i, j + 1].TileType);
             ExchangeTilePrefab(i,j,GameManager.Instance.Map[i, j + 1].type);
           }
         }
         if (i < 3 && j < 3 && (j != 0 || i != 0))
         {
-          //ExchangeTilePrefab(mapMatrix[i, j], 1);
           ExchangeTilePrefab(i,j,1);
-          //SetExplored(mapMatrix[i, j], true);
           SetExplored(i,j, true);
-          //SetVisible(mapMatrix[i, j], true);
           SetVisible(i,j, true);
         }
       }
@@ -188,8 +183,6 @@ public class MapScript : MonoBehaviour
     {
       GameManager.Instance.Map[i,j].resourceAmount = Random.Range(50,300);
       GameManager.Instance.Map[i,j].resourceMaxAmount = 300;
-
-
     }
 
     //position of the spawn
@@ -213,7 +206,6 @@ public class MapScript : MonoBehaviour
 
     var tileEntry = Instantiate(tilePrefabs[tileType], this.transform) as Transform;
     TileScript newTile = tileEntry.GetComponent<TileScript>();
-
     GameManager.Instance.Map[i,j].type = tileType;
     GameManager.Instance.Map[i,j].tileName = (TileName(tileType) + ": [" + i + "," + j + "]");
     GameManager.Instance.Map[i,j].distanceAntHill = distance_anthill;
@@ -379,15 +371,18 @@ public class MapScript : MonoBehaviour
   {
 
     var tileEntry = Instantiate(tilePrefabs[tileType], GameObject.Find("MapTiles").transform) as Transform;
-    
+   
     tileEntry.position = mapMatrix[posX, posZ].transform.position; // all tiles are stored in mapMatrix
-    
-
     TileScript newTile = tileEntry.GetComponent<TileScript>();
     newTile.xPos = posX;
     newTile.zPos = posZ;
-    Destroy(mapMatrix[posX, posZ].gameObject);
+    
+    if(GameManager.Instance.Map[posX, posZ].ownedByPlayer) 
+    {
+      newTile.spawnOwnedFlagOnTile();
+    }
 
+    Destroy(mapMatrix[posX, posZ].gameObject);
     mapMatrix[posX, posZ] = newTile;
   }
 

@@ -107,34 +107,18 @@ public class GameManager : MonoBehaviour
     /// Regrow rate of tiles
     /// </summary>
     public int tileRegrowAmount;
-    
+
     /// <summary>
-    /// Weather distance multiplier
+    /// Current Weather distance multiplier
     /// </summary>
     public float weatherAcessMultiplier;
 
     /// <summary>
-    /// Weather regrow multiplier
+    /// Current Weather regrow multiplier
     /// </summary>
     public float weatherRegrowMultiplier;
 
-    
-
-    /// <summary>
-    /// [0]Spring, [1]Summer, [2]Autumn, [3]Winter
-    /// </summary>
-    public int currentSeason;
-
-    /// <summary>
-    /// [0]sun, [1]rain, [2]overcast, [3]fog, [4] snow
-    /// </summary>
-    public int currentWeather;
-
-    
-
-
-   
-
+  [Header("Anthill / Upgrades")]
     /// <summary>
     /// Current player hatchery level
     /// </summary>
@@ -185,7 +169,23 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public int maxAntsAnthillTile;
 
-    //Weather
+    [Header("Season / Turn Count (in sequence)")]
+    public int springTurnCount;
+    public int summerTurnCount;
+    public int autumnTurnCount;
+    public int winterTurnCount;
+
+    [Header("Weather / Access and Regrow multiplier")]
+    /// <summary>
+    /// [0]Spring, [1]Summer, [2]Autumn, [3]Winter
+    /// </summary>
+    public int currentSeason;
+
+    /// <summary>
+    /// [0]sun, [1]rain, [2]overcast, [3]fog, [4] snow
+    /// </summary>
+    public int currentWeather;
+
     /// <summary>
     /// Sun, easy tile access
     /// </summary>
@@ -236,6 +236,7 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public float snowRegrow;
 
+    [Header("Map Creation / Tile Weights")]  
     /// <summary>
     /// Weight for the grass creating closer to less = more grass closer
     /// </summary>
@@ -250,7 +251,6 @@ public class GameManager : MonoBehaviour
     /// </summary>
     public float soilWeight = 0.3f;
 
-    
     /// <summary>
     /// threshhold to update to grass
     /// </summary>

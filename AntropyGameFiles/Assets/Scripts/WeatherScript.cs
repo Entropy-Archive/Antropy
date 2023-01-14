@@ -19,27 +19,70 @@ public class WeatherScript : MonoBehaviour
     /// <param name="currentSeason"> [0]Spring, [1]Summer, [2]Autumn, [3]Winter</param>
    public void UpdateWeather(int currentSeason) 
    {
+     int weatherChance = Random.Range(0, 101);
      switch (currentSeason)
      {
         case 0:
-          //higher probability of rain and sun
-          //Basic Implementation for the Prototype
-          //int weather = Random.Range(0, 2);
-          gameManagerInstance.currentWeather = 0;
-          //WeatherMultiplierUpdate(weather);
+          //higher probability of rain < overcast < sun
+          if(weatherChance <= 50) 
+          {
+            gameManagerInstance.currentWeather = 1;
+          }
+          else if(weatherChance > 50 && weatherChance <= 70) 
+          {
+            gameManagerInstance.currentWeather = 2;
+          }
+          else 
+          {
+            gameManagerInstance.currentWeather = 0;
+          }
+          
+          WeatherMultiplierUpdate(gameManagerInstance.currentWeather);
           break;
 
         case 1:
-          //higher probability of sun
+          //higher probability of sun < overcast < rain
+          if (weatherChance <= 20)
+          {
+            gameManagerInstance.currentWeather = 1;
+          }
+          else if(weatherChance > 20 && weatherChance <= 40)
+          {
+            gameManagerInstance.currentWeather = 2;
+          }
+          else
+          {
+            gameManagerInstance.currentWeather = 0;
+          }
+          WeatherMultiplierUpdate(gameManagerInstance.currentWeather);
           break;
 
         case 2:
-          //higher probability of rain and fog
+          //higher probability of rain < fog < sun
+          if (weatherChance <= 20)
+          {
+            gameManagerInstance.currentWeather = 0;
+          }
+          else if (weatherChance > 20 && weatherChance <= 30)
+          {
+            gameManagerInstance.currentWeather = 3;
+          }
+          else if (weatherChance > 30 && weatherChance <= 40)
+          {
+            gameManagerInstance.currentWeather = 3;
+          }
+          else 
+          {
+            gameManagerInstance.currentWeather = 3;
+          }
+          WeatherMultiplierUpdate(gameManagerInstance.currentWeather);
           break;
 
         case 3:
-          //DEATH
-          break;
+        //DEATH
+        gameManagerInstance.currentWeather = 4;
+        WeatherMultiplierUpdate(gameManagerInstance.currentWeather);
+        break;
 
         default:
           Debug.Log("Error with season assignment in  While Updating");
@@ -53,6 +96,11 @@ public class WeatherScript : MonoBehaviour
   /// <param name="weather"></param>
   public void WeatherMultiplierUpdate(int weather)
   {
+    if(weather == gameManagerInstance.currentWeather) 
+    {
+      return;
+    }
+
     if (weather == 0)
     {
       gameManagerInstance.weatherAcessMultiplier = gameManagerInstance.sunAccess;
@@ -104,5 +152,4 @@ public class WeatherScript : MonoBehaviour
         return "InvalidWeather";
     }
   }
-
 }
