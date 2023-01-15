@@ -96,11 +96,6 @@ public class WeatherScript : MonoBehaviour
   /// <param name="weather"></param>
   public void WeatherMultiplierUpdate(int weather)
   {
-    if(weather == gameManagerInstance.currentWeather) 
-    {
-      return;
-    }
-
     if (weather == 0)
     {
       gameManagerInstance.weatherAcessMultiplier = gameManagerInstance.sunAccess;

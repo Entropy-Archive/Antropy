@@ -11,7 +11,6 @@ public class NextTurnScript : MonoBehaviour
   //UI Update
   GameObject uiAssignAnts; //= GameObject.Find("AssignAnts");
   AntCounter antCounter;
-  bool checker = false;
 
   private void Awake()
   {
@@ -45,7 +44,6 @@ public class NextTurnScript : MonoBehaviour
       ExploreTurn();
       GameManager.Instance.currentTurnCount++;
       TurnInfoUpdate();
-      checker = false;
 
       //Update the infobars
       GameManager.Instance.miniBarInfoInstance.MiniBarInfoUpdate();
@@ -67,17 +65,6 @@ public class NextTurnScript : MonoBehaviour
       {
         if(GameManager.Instance.Map[i, j].ownedByPlayer) 
         {
-
-          //Weather and Distance Calculation 
-          //Tile Distance Degradation + Current Weather influence
-          float gatheringBase = GameManager.Instance.Map[i, j].assignedAnts * GameManager.Instance.resourceGatherRate;// * gameManager.weatherAcessMultiplier);
-
-          //TODO Insert Distance Tile Reduction here
-          for (int k = 0; k < GameManager.Instance.Map[i, j].distanceAntHill; k++)
-          {
-            //gatheringBase = Mathf.Ceil(gatheringBase * gameManager.distanceGatheringReductionRate);
-          }
-
           if(GameManager.Instance.Map[i, j].type == 1 || GameManager.Instance.Map[i, j].type == 2) // tile is grass or soil
           {
             GameManager.Instance.resources += GameManager.Instance.Map[i, j].reservedResources;
@@ -119,7 +106,7 @@ public class NextTurnScript : MonoBehaviour
     {
       for (int j = 0; j < GameManager.Instance.columns; j++)
       {
-        int regrowAmount = (int)Mathf.Ceil(GameManager.Instance.tileRegrowAmount);
+        int regrowAmount = (int)Mathf.Ceil(GameManager.Instance.tileRegrowAmount * GameManager.Instance.weatherRegrowMultiplier);
         CalculateNewResourceAmountFlat(regrowAmount,i ,j);
         
         if(GameManager.Instance.Map[i, j].assignedAnts * (int)GameManager.Instance.resourceGatherRate > (int)GameManager.Instance.Map[i,j].resourceAmount)

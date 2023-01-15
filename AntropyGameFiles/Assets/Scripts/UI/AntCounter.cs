@@ -60,14 +60,22 @@ public class AntCounter : MonoBehaviour
           SetAssignedAnts_remote();
           UpdateAntText();
 
+          //Calc for resource gathering rate * weather
+          float gatheredResources = GameManager.Instance.resourceGatherRate * GameManager.Instance.weatherAcessMultiplier;
           if (GameManager.Instance.Map[posX, posZ].type != 0 && 
               GameManager.Instance.Map[posX, posZ].type != 3 &&
-              GameManager.Instance.Map[posX, posZ].resourceAmount > GameManager.Instance.resourceGatherRate &&
-              GameManager.Instance.Map[posX, posZ].resourceAmount - GameManager.Instance.Map[posX, posZ].reservedResources >=  GameManager.Instance.resourceGatherRate) 
-              {
-                GameManager.Instance.income += (int)GameManager.Instance.resourceGatherRate;
-                GameManager.Instance.Map[posX, posZ].reservedResources += (int) GameManager.Instance.resourceGatherRate;
-              }
+              GameManager.Instance.Map[posX, posZ].resourceAmount > gatheredResources &&
+              GameManager.Instance.Map[posX, posZ].resourceAmount - GameManager.Instance.Map[posX, posZ].reservedResources >= gatheredResources)
+          {
+            ////TODO Insert Distance Tile Reduction here
+            //for (int k = 0; k < GameManager.Instance.Map[i, j].distanceAntHill; k++)
+            //{
+            //  //gatheringBase = Mathf.Ceil(gatheringBase * gameManager.distanceGatheringReductionRate);
+            //}
+            //GameManager.Instance.income += (int)GameManager.Instance.resourceGatherRate;
+            GameManager.Instance.income += (int)Mathf.Ceil(gatheredResources);
+            GameManager.Instance.Map[posX, posZ].reservedResources += (int)Mathf.Ceil(gatheredResources);//(int) GameManager.Instance.resourceGatherRate;
+          }
                 
         }
     GameManager.Instance.miniBarInfoInstance.MiniBarInfoUpdate();

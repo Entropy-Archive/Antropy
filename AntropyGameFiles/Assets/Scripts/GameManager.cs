@@ -408,7 +408,25 @@ public class GameManager : MonoBehaviour
       //Anthill values
       hatcheryLevel = 0;
       storageLevel = 0;
-      
+        
+      sunAccess = 1.5f;
+      sunRegrow = 1.0f;
+      rainAccess = 0.5f;
+      rainRegrow = 2.0f;
+      overcastAccess = 1.0f;
+      overcastRegrow = 1.0f;
+      fogAccess = 1.5f;
+      fogRegrow = 1.5f;
+      snowAccess = 0.0f;
+      snowRegrow = 0.0f;
+
+      springTurnCount = 30;
+      summerTurnCount = 60;
+      autumnTurnCount = 90;
+      winterTurnCount = 120;
+      weatherAcessMultiplier = 1.5f;
+      weatherRegrowMultiplier = 1.0f;
+
       currentUpkeep = (int)Mathf.Ceil(totalAnts * foodPerAnt);
       income -= currentUpkeep;
       hatcheryCost =             new int[] {200,  400, 600,   800,  1600, 3200, 4800, 5400, 5800, 6500, 7000 };
@@ -418,6 +436,7 @@ public class GameManager : MonoBehaviour
 
       hatcheryMaxLevel = populationCapacityAmount.Length;
       storageMaxLevel = storageCapacityAmount.Length;
+      
       miniBarInfoInstance.MiniBarInfoUpdate();
     }
 
